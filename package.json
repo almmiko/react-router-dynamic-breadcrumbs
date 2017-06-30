@@ -1,0 +1,29 @@
+{
+  "name": "react-router-breadcrumbs",
+  "version": "1.0.0",
+  "description": "Breadcrumbs react component for react-router-v4",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roya3000/react-router-breadcrumbs.git"
+  },
+  "keywords": [
+    "react-router-4",
+    "react",
+    "breadcrumbs"
+  ],
+  "author": "Alexander Mykolaichuk <alexmix3000@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roya3000/react-router-breadcrumbs/issues"
+  },
+  "homepage": "https://github.com/roya3000/react-router-breadcrumbs#readme",
+  "dependencies": {
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-router-dom": "^4.1.1"
+  }
+}
