@@ -53,7 +53,7 @@ class App extends Component {
 
 ```
 
-### Custom html markup
+## Custom html markup
 
 ``` javascript
 class App extends Component {
