@@ -1,5 +1,5 @@
 {
-  "name": "react-router-breadcrumbs",
+  "name": "react-router-dynamic-breadcrumbs",
   "version": "1.0.0",
   "description": "Breadcrumbs react component for react-router-v4",
   "main": "src/index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roya3000/react-router-breadcrumbs.git"
+    "url": "git+https://github.com/roya3000/react-router-dynamic-breadcrumbs.git"
   },
   "keywords": [
     "react-router-4",
@@ -18,9 +18,9 @@
   "author": "Alexander Mykolaichuk <alexmix3000@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/roya3000/react-router-breadcrumbs/issues"
+    "url": "https://github.com/roya3000/react-router-dynamic-breadcrumbs/issues"
   },
-  "homepage": "https://github.com/roya3000/react-router-breadcrumbs#readme",
+  "homepage": "https://github.com/roya3000/react-router-dynamic-breadcrumbs#readme",
   "dependencies": {
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
