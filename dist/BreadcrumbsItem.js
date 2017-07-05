@@ -29,7 +29,23 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
     return mappedRoutes[url];
   };
 
-  var routeName = findRouteName(match.url) || name;
+  var matchRouteName = function matchRouteName(url, routesCollection) {
+    var fRouteName = null;
+
+    for (var key in routesCollection) {
+      if (routesCollection.hasOwnProperty(key)) {
+        var routeMatcher = new RegExp(key.replace(/:[^\s/]+/g, '([\\w-]+)'));
+
+        if (url.match(routeMatcher) && key.indexOf(':') !== -1) {
+          fRouteName = routesCollection[key];
+        }
+      }
+    }
+
+    return fRouteName;
+  };
+
+  var routeName = matchRouteName(match.url, mappedRoutes) || findRouteName(match.url) || name;
 
   if (routeName) {
     return match.isExact ? _react2.default.createElement(
