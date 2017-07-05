@@ -37,6 +37,7 @@ const routes = {
   '/': 'Home',
   '/blog': 'Blog',
   '/users': 'Users'
+  '/users/:id/info': 'User Info'
   // you don't need declare /users/:id. All dynamic params will display automatically.
 };
 
