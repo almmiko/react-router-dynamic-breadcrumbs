@@ -2,6 +2,12 @@
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
 [![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
+
+[![npm badge][npm-badge-png]][package-url]
+
+[npm-badge-png]: https://nodei.co/npm/react-router-dynamic-breadcrumbs.png?mini=true
+[package-url]: https://npmjs.com/package/react-router-dynamic-breadcrumbs
+
 # React router breadcrumbs
 
 Breadcrumbs react component for react-router-v4 with dynamic routing parameters
