@@ -36,16 +36,46 @@ import {
 } from 'react-router-dom'
      
 import Breadcrumbs  from 'react-router-dynamic-breadcrumbs';   
-
-// Create routes mapping
-
+  
+/**
+*  Create routes mapping
+*  
+*  All dynamic params will display automatically.
+*  not that even though '/users/:id' route is not in configuration file, 
+*  it's corresponding link it will be displayed as the value of ':id'
+*/
 const routes = {
   '/': 'Home',
-  '/blog': 'Blog',
-  '/users': 'Users'
-  '/users/:id/info': 'User Info'
-  // you don't need declare /users/:id. All dynamic params will display automatically.
+  '/blog': 'Blog', 
+  '/users': 'Users',
+  '/users/:id/info': 'User Info', 
+  '/users/:id/posts': 'Posts by :id', // backreferences will be replaced by correspoding parts of url
+  
+/* 
+  you can provide a callback, which will receive placeholder mapping as a parameter
+  for instance at /users/dummy/posts/4 the following pattern will result in callback with 
+  {':id':'dummy', ':page':'4'}
+  
+  NOTE: Services or stores will not be automatically injected into resolver function, 
+  you should .bind context to resolver (better way) or  to inject them 
+  into your routes declaration, like here (bad pattern, don't do it like this)
+*/
+  '/users/:id/posts/:page': (match)=>`Page ${match[':page']} of ${Pagination.total()}`
+
+   
+/* 
+  you can provide a callback for exact match as well,
+  it will receive the full url as callback, allowing you to use some external resolver of (url)=>string signature.
+  in this example it will receive '/settings' or '/forum' respectively 
+*/
+  
+  '/settings': MyBreadcrumbsResolver.resolve,
+  '/forum': MyBreadcrumbsResolver.resolve 
+//  
+    
 };
+
+
 
 
 class App extends Component {
@@ -83,7 +113,7 @@ class App extends Component {
 
 | Property | Type | Description
 :---|:---|:---
-| `mappedRoutes` | object | Plain javascript object with routes paths and names. Expected signature: `(Object): PropTypes.shape({}).isRequired` |
+| `mappedRoutes` | object | Plain javascript object with routes paths and names/resolver callbacks. Expected signature: `(Object): PropTypes.shape({}).isRequired` |
 | `WrapperComponent` | function | Function responsible for creating wrapper html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `ActiveLinkComponent` | function | Function responsible for creating active link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `LinkComponent` | function | Function responsible for creating link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |

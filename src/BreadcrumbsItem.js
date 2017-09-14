@@ -5,18 +5,45 @@ import PropTypes from 'prop-types';
 const BreadcrumbsItem = (props) => {
   const { match, name, mappedRoutes } = props;
   const { ActiveLinkComponent, LinkComponent } = props.parentProps;
-  
-  const findRouteName = url => mappedRoutes[url];
+
+  const getPlaceholderVars = (url, key) => {
+    const placeholderMatcher = /:[^\s/]+/g;
+    const placeholders = key.match(placeholderMatcher);
+    if (!placeholders)
+      return null;
+    const routeMatcher = new RegExp(key.replace(placeholderMatcher, '([\\w-]+)'));
+    const match = url.match(routeMatcher);
+    if (!match)
+      return null;
+    return placeholders.reduce((memo, placeholder, index) => Object.assign(memo, {
+      [placeholder]: match[ index + 1 ] || null
+    }), {});
+  };
+
+  const findRouteName = url => mappedRoutes[ url ];
 
   const matchRouteName = (url, routesCollection) => {
     let fRouteName = null;
 
     for (const key in routesCollection) {
       if (routesCollection.hasOwnProperty(key)) {
-        const routeMatcher = new RegExp(key.replace(/:[^\s/]+/g, '([\\w-]+)'));
-
-        if (url.match(routeMatcher) && key.indexOf(':') !== -1) {
-          fRouteName = routesCollection[key];
+        let routeName = routesCollection[ key ];
+        if (key.indexOf(':') !== -1) {
+          const match = getPlaceholderVars(url, key);
+          if (match) {
+            if (routeName instanceof Function)
+              fRouteName = routeName(match);
+            else
+              Object.keys(match)
+                    .forEach((placeholder) => fRouteName = routeName.replace(placeholder, match[ placeholder ]));
+          }
+        }
+        else {
+          if (key === url) {
+            if (routeName instanceof Function)
+              return routeName(key);
+            return routeName;
+          }
         }
       }
     }
@@ -24,7 +51,7 @@ const BreadcrumbsItem = (props) => {
     return fRouteName;
   };
 
-  const routeName = matchRouteName(match.url, mappedRoutes) || (findRouteName(match.url) || name);
+  const routeName = matchRouteName(match.url, mappedRoutes) || name;
 
   if (routeName) {
     return match.isExact
