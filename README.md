@@ -60,7 +60,7 @@ const routes = {
   you should .bind context to resolver (better way) or  to inject them 
   into your routes declaration, like here (bad pattern, don't do it like this)
 */
-  '/users/:id/posts/:page': (match)=>`Page ${match[':page']} of ${Pagination.total()}`
+  '/users/:id/posts/:page': (match)=>`Page ${match[':page']} of ${Pagination.total()}`,
 
    
 /* 
@@ -71,8 +71,7 @@ const routes = {
   
   '/settings': MyBreadcrumbsResolver.resolve,
   '/forum': MyBreadcrumbsResolver.resolve 
-//  
-    
+
 };
 
 
@@ -89,6 +88,16 @@ class App extends Component {
 }
 
 ```
+
+## Match precedence order
+
+The routes definition object is not traversed in default object iteration order. Instead there's a stable sort applied to routes based on several considerations:
+* Routes without any placeholders like "**:id**" will always have top priority when resolving link name
+* Routes with placeholders are sorted by amount of placeholders in the route, so the route with less placeholders will have priority over more "dynamic" route when resolving. For example, if you have both "**/user/new**" and "**/user/:id**" routes, the first one with always be resolved correctly despite in which order you put them into the definition object
+* Routes having the same number of placeholders will be sorted by length, so that shorter routes will take precedence over longer routes.
+
+The basic idea to understand the order in which routes are resolved to link names is to think that, if current url can be resolved to several routes, the least ambiguous definition will always be used. A constant is always prefered to a wildcard, and less wildcards are prefered to more of them.
+
 
 ## Custom html markup
 

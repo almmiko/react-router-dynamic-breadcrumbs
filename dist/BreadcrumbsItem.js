@@ -26,9 +26,9 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
       ActiveLinkComponent = _props$parentProps.ActiveLinkComponent,
       LinkComponent = _props$parentProps.LinkComponent;
 
+  var placeholderMatcher = /:[^\s/]+/g;
 
   var getPlaceholderVars = function getPlaceholderVars(url, key) {
-    var placeholderMatcher = /:[^\s/]+/g;
     var placeholders = key.match(placeholderMatcher);
     if (!placeholders) return null;
     var routeMatcher = new RegExp(key.replace(placeholderMatcher, '([\\w-]+)'));
@@ -46,28 +46,38 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var matchRouteName = function matchRouteName(url, routesCollection) {
     var fRouteName = null;
 
-    for (var key in routesCollection) {
+    Object.keys(routesCollection).sort(function (a, b) {
+      var aTokenCount = (a.match(placeholderMatcher) || []).length;
+      var bTokenCount = (b.match(placeholderMatcher) || []).length;
+      switch (true) {
+        case aTokenCount === bTokenCount:
+          return a.length > b.length ? 1 : -1; //longest routes have the priority
+        case aTokenCount === 0 && bTokenCount !== 0:
+          return 1;
+        case aTokenCount !== 0 && bTokenCount === 0:
+          return -1; //static routes always have the priority over dynamic
+        default:
+          return aTokenCount < bTokenCount ? 1 : -1; //among dynamic routes the one with less placeholders take priority
+      }
+    }).forEach(function (key) {
       if (routesCollection.hasOwnProperty(key)) {
         var _routeName = routesCollection[key];
         if (key.indexOf(':') !== -1) {
-          (function () {
-            var match = getPlaceholderVars(url, key);
-            if (match) {
-              if (_routeName instanceof Function) fRouteName = _routeName(match);else {
-                fRouteName = Object.keys(match).reduce(function (routeName, placeholder) {
-                  return routeName.replace(placeholder, match[placeholder]);
-                }, _routeName);
-              }
+          var _match = getPlaceholderVars(url, key);
+          if (_match) {
+            if (_routeName instanceof Function) fRouteName = _routeName(_match);else {
+              fRouteName = Object.keys(_match).reduce(function (routeName, placeholder) {
+                return routeName.replace(placeholder, _match[placeholder]);
+              }, _routeName);
             }
-          })();
+          }
         } else {
           if (key === url) {
-            if (_routeName instanceof Function) return _routeName(key);
-            return _routeName;
+            if (_routeName instanceof Function) fRouteName = _routeName(key);else fRouteName = _routeName;
           }
         }
       }
-    }
+    });
 
     return fRouteName;
   };
