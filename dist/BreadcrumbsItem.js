@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -50,28 +48,24 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
 
     for (var key in routesCollection) {
       if (routesCollection.hasOwnProperty(key)) {
-        var _ret = function () {
-          var routeName = routesCollection[key];
-          if (key.indexOf(':') !== -1) {
-            var _match = getPlaceholderVars(url, key);
-            if (_match) {
-              if (routeName instanceof Function) fRouteName = routeName(_match);else Object.keys(_match).forEach(function (placeholder) {
-                return fRouteName = routeName.replace(placeholder, _match[placeholder]);
-              });
+        var _routeName = routesCollection[key];
+        if (key.indexOf(':') !== -1) {
+          (function () {
+            var match = getPlaceholderVars(url, key);
+            if (match) {
+              if (_routeName instanceof Function) fRouteName = _routeName(match);else {
+                fRouteName = Object.keys(match).reduce(function (routeName, placeholder) {
+                  return routeName.replace(placeholder, match[placeholder]);
+                }, _routeName);
+              }
             }
-          } else {
-            if (key === url) {
-              if (routeName instanceof Function) return {
-                  v: routeName(key)
-                };
-              return {
-                v: routeName
-              };
-            }
+          })();
+        } else {
+          if (key === url) {
+            if (_routeName instanceof Function) return _routeName(key);
+            return _routeName;
           }
-        }();
-
-        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+        }
       }
     }
 

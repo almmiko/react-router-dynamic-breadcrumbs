@@ -33,9 +33,10 @@ const BreadcrumbsItem = (props) => {
           if (match) {
             if (routeName instanceof Function)
               fRouteName = routeName(match);
-            else
-              Object.keys(match)
-                    .forEach((placeholder) => fRouteName = routeName.replace(placeholder, match[ placeholder ]));
+            else {
+              fRouteName = Object.keys(match)
+                                 .reduce((routeName, placeholder) => routeName.replace(placeholder, match[ placeholder ]), routeName);
+            }
           }
         }
         else {
