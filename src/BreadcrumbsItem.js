@@ -15,8 +15,9 @@ const BreadcrumbsItem = (props) => {
     const match = url.match(routeMatcher);
     if (!match)
       return null;
-    return placeholders.reduce((memo, placeholder, index) => Object.assign(memo, {
-      [placeholder]: match[ index + 1 ] || null
+    return placeholders.reduce((memo, placeholder, index, array, value = match[ index + 1 ] || null) => Object.assign(memo, {
+      [placeholder]: value,
+      [placeholder.substring(1)]: value
     }), {});
   };
 
@@ -45,7 +46,7 @@ const BreadcrumbsItem = (props) => {
           const match = getPlaceholderVars(url, key);
           if (match) {
             if (routeName instanceof Function)
-              fRouteName = routeName(match);
+              fRouteName = routeName(url, match);
             else {
               fRouteName = Object.keys(match)
                                  .reduce((routeName, placeholder) => routeName.replace(placeholder, match[ placeholder ]), routeName);
@@ -55,7 +56,7 @@ const BreadcrumbsItem = (props) => {
         else {
           if (key === url) {
             if (routeName instanceof Function)
-              fRouteName = routeName(key);
+              fRouteName = routeName(url, null);
             else
               fRouteName = routeName;
           }

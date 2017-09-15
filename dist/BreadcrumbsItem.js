@@ -34,8 +34,11 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
     var routeMatcher = new RegExp(key.replace(placeholderMatcher, '([\\w-]+)'));
     var match = url.match(routeMatcher);
     if (!match) return null;
-    return placeholders.reduce(function (memo, placeholder, index) {
-      return Object.assign(memo, _defineProperty({}, placeholder, match[index + 1] || null));
+    return placeholders.reduce(function (memo, placeholder, index, array) {
+      var _Object$assign;
+
+      var value = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : match[index + 1] || null;
+      return Object.assign(memo, (_Object$assign = {}, _defineProperty(_Object$assign, placeholder, value), _defineProperty(_Object$assign, placeholder.substring(1), value), _Object$assign));
     }, {});
   };
 
@@ -65,7 +68,7 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
         if (key.indexOf(':') !== -1) {
           var _match = getPlaceholderVars(url, key);
           if (_match) {
-            if (_routeName instanceof Function) fRouteName = _routeName(_match);else {
+            if (_routeName instanceof Function) fRouteName = _routeName(url, _match);else {
               fRouteName = Object.keys(_match).reduce(function (routeName, placeholder) {
                 return routeName.replace(placeholder, _match[placeholder]);
               }, _routeName);
@@ -73,7 +76,7 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
           }
         } else {
           if (key === url) {
-            if (_routeName instanceof Function) fRouteName = _routeName(key);else fRouteName = _routeName;
+            if (_routeName instanceof Function) fRouteName = _routeName(key, null);else fRouteName = _routeName;
           }
         }
       }

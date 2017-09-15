@@ -52,31 +52,35 @@ const routes = {
   '/users/:id/posts': 'Posts by :id', // backreferences will be replaced by correspoding parts of url
   
 /* 
-  you can provide a callback, which will receive placeholder mapping as a parameter
-  for instance at /users/dummy/posts/4 the following pattern will result in callback with 
-  {':id':'dummy', ':page':'4'}
+*  you can provide a callback of (url, match)=>string signature
+*  match will contain pattern values both prefixed and isolated
+*  for instance the following pattern will result in callback with
+*   
+*  ('/users/dummy/posts/4', {
+*   'id':'dummy', ':id':'dummy', 
+*   'page':'4',   ':page':'4'
+*  })
+*  
+*  while link will contain smth like "Page 4 of 10"
+*/
+  
+  '/users/:id/posts/:page': (match)=>`Page ${match[':page']} of ${Pagination.total()}`,
+  
+   
+/*
+  For static routes 'match' argument is always null
   
   NOTE: Services or stores will not be automatically injected into resolver function, 
-  you should .bind context to resolver (better way) or  to inject them 
-  into your routes declaration, like here (bad pattern, don't do it like this)
-*/
-  '/users/:id/posts/:page': (match)=>`Page ${match[':page']} of ${Pagination.total()}`,
-
-   
-/* 
-  you can provide a callback for exact match as well,
-  it will receive the full url as callback, allowing you to use some external resolver of (url)=>string signature.
-  in this example it will receive '/settings' or '/forum' respectively 
+  you should either inject your services to your config, like in previous example (bad pattern), 
+  .bind context to your resolvers,  or even totally relay the resolution 
+  to a store-aware service
 */
   
-  '/settings': MyBreadcrumbsResolver.resolve,
-  '/forum': MyBreadcrumbsResolver.resolve 
-
+  '/settings': MyBreadcrumbsResolver.resolve, // will receive ('/settings',null)
+  '/forum': MyBreadcrumbsResolver.resolve  
 };
-
-
-
-
+  
+  
 class App extends Component {
   render() {
     return (
@@ -96,7 +100,7 @@ The routes definition object is not traversed in default object iteration order.
 * Routes with placeholders are sorted by amount of placeholders in the route, so the route with less placeholders will have priority over more "dynamic" route when resolving. For example, if you have both "**/user/new**" and "**/user/:id**" routes, the first one with always be resolved correctly despite in which order you put them into the definition object
 * Routes having the same number of placeholders will be sorted by length, so that shorter routes will take precedence over longer routes.
 
-The basic idea to understand the order in which routes are resolved to link names is to think that, if current url can be resolved to several routes, the least ambiguous definition will always be used. A constant is always prefered to a wildcard, and less wildcards are prefered to more of them.
+The basic idea to understand about the order in which routes are resolved to link names is to think that, if current url can be resolved to several routes, the least ambiguous definition will always be used. A constant is always prefered to a wildcard, and less wildcards are prefered to more of them.
 
 
 ## Custom html markup
