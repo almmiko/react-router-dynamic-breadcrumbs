@@ -16,6 +16,8 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var match = props.match,
       name = props.name,
@@ -24,6 +26,21 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
       ActiveLinkComponent = _props$parentProps.ActiveLinkComponent,
       LinkComponent = _props$parentProps.LinkComponent;
 
+  var placeholderMatcher = /:[^\s/]+/g;
+
+  var getPlaceholderVars = function getPlaceholderVars(url, key) {
+    var placeholders = key.match(placeholderMatcher);
+    if (!placeholders) return null;
+    var routeMatcher = new RegExp(key.replace(placeholderMatcher, '([\\w-]+)'));
+    var match = url.match(routeMatcher);
+    if (!match) return null;
+    return placeholders.reduce(function (memo, placeholder, index, array) {
+      var _Object$assign;
+
+      var value = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : match[index + 1] || null;
+      return Object.assign(memo, (_Object$assign = {}, _defineProperty(_Object$assign, placeholder, value), _defineProperty(_Object$assign, placeholder.substring(1), value), _Object$assign));
+    }, {});
+  };
 
   var findRouteName = function findRouteName(url) {
     return mappedRoutes[url];
@@ -32,20 +49,43 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var matchRouteName = function matchRouteName(url, routesCollection) {
     var fRouteName = null;
 
-    for (var key in routesCollection) {
+    Object.keys(routesCollection).sort(function (a, b) {
+      var aTokenCount = (a.match(placeholderMatcher) || []).length;
+      var bTokenCount = (b.match(placeholderMatcher) || []).length;
+      switch (true) {
+        case aTokenCount === bTokenCount:
+          return a.length > b.length ? 1 : -1; //longest routes have the priority
+        case aTokenCount === 0 && bTokenCount !== 0:
+          return 1;
+        case aTokenCount !== 0 && bTokenCount === 0:
+          return -1; //static routes always have the priority over dynamic
+        default:
+          return aTokenCount < bTokenCount ? 1 : -1; //among dynamic routes the one with less placeholders take priority
+      }
+    }).forEach(function (key) {
       if (routesCollection.hasOwnProperty(key)) {
-        var routeMatcher = new RegExp(key.replace(/:[^\s/]+/g, '([\\w-]+)'));
-
-        if (url.match(routeMatcher) && key.indexOf(':') !== -1) {
-          fRouteName = routesCollection[key];
+        var _routeName = routesCollection[key];
+        if (key.indexOf(':') !== -1) {
+          var _match = getPlaceholderVars(url, key);
+          if (_match) {
+            if (_routeName instanceof Function) fRouteName = _routeName(url, _match);else {
+              fRouteName = Object.keys(_match).reduce(function (routeName, placeholder) {
+                return routeName.replace(placeholder, _match[placeholder]);
+              }, _routeName);
+            }
+          }
+        } else {
+          if (key === url) {
+            if (_routeName instanceof Function) fRouteName = _routeName(key, null);else fRouteName = _routeName;
+          }
         }
       }
-    }
+    });
 
     return fRouteName;
   };
 
-  var routeName = matchRouteName(match.url, mappedRoutes) || findRouteName(match.url) || name;
+  var routeName = matchRouteName(match.url, mappedRoutes) || name;
 
   if (routeName) {
     return match.isExact ? _react2.default.createElement(

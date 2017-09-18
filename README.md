@@ -36,18 +36,50 @@ import {
 } from 'react-router-dom'
      
 import Breadcrumbs  from 'react-router-dynamic-breadcrumbs';   
-
-// Create routes mapping
-
+  
+/**
+*  Create routes mapping
+*  
+*  All dynamic params will display automatically.
+*  not that even though '/users/:id' route is not in configuration file, 
+*  it's corresponding link it will be displayed as the value of ':id'
+*/
 const routes = {
   '/': 'Home',
-  '/blog': 'Blog',
-  '/users': 'Users'
-  '/users/:id/info': 'User Info'
-  // you don't need declare /users/:id. All dynamic params will display automatically.
+  '/blog': 'Blog', 
+  '/users': 'Users',
+  '/users/:id/info': 'User Info', 
+  '/users/:id/posts': 'Posts by :id', // backreferences will be replaced by correspoding parts of url
+  
+/* 
+*  you can provide a callback of (url, match)=>string signature
+*  match will contain pattern values both prefixed and isolated
+*  for instance the following pattern will result in callback with
+*   
+*  ('/users/dummy/posts/4', {
+*   'id':'dummy', ':id':'dummy', 
+*   'page':'4',   ':page':'4'
+*  })
+*  
+*  while link will contain smth like "Page 4 of 10"
+*/
+  
+  '/users/:id/posts/:page': (match)=>`Page ${match[':page']} of ${Pagination.total()}`,
+  
+   
+/*
+  For static routes 'match' argument is always null
+  
+  NOTE: Services or stores will not be automatically injected into resolver function, 
+  you should either inject your services to your config, like in previous example (bad pattern), 
+  .bind context to your resolvers,  or even totally relay the resolution 
+  to a store-aware service
+*/
+  
+  '/settings': MyBreadcrumbsResolver.resolve, // will receive ('/settings',null) 
 };
-
-
+  
+  
 class App extends Component {
   render() {
     return (
@@ -59,6 +91,16 @@ class App extends Component {
 }
 
 ```
+
+## Match precedence order
+
+The routes definition object is not traversed in default object iteration order. Instead there's a stable sort applied to routes based on several considerations:
+* Routes without any placeholders like "**:id**" will always have top priority when resolving link name
+* Routes with placeholders are sorted by amount of placeholders in the route, so the route with less placeholders will have priority over more "dynamic" route when resolving. For example, if you have both "**/user/new**" and "**/user/:id**" routes, the first one with always be resolved correctly despite in which order you put them into the definition object
+* Routes having the same number of placeholders will be sorted by length, so that shorter routes will take precedence over longer routes.
+
+The basic idea to understand about the order in which routes are resolved to link names is to think that, if current url can be resolved to several routes, the least ambiguous definition will always be used. A constant is always prefered to a wildcard, and less wildcards are prefered to more of them.
+
 
 ## Custom html markup
 
@@ -83,7 +125,7 @@ class App extends Component {
 
 | Property | Type | Description
 :---|:---|:---
-| `mappedRoutes` | object | Plain javascript object with routes paths and names. Expected signature: `(Object): PropTypes.shape({}).isRequired` |
+| `mappedRoutes` | object | Plain javascript object with routes paths and names/resolver callbacks. Expected signature: `(Object): PropTypes.shape({}).isRequired` |
 | `WrapperComponent` | function | Function responsible for creating wrapper html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `ActiveLinkComponent` | function | Function responsible for creating active link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `LinkComponent` | function | Function responsible for creating link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
