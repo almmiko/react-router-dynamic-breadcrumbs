@@ -21,8 +21,6 @@ const BreadcrumbsItem = (props) => {
     }), {});
   };
 
-  const findRouteName = url => mappedRoutes[ url ];
-
   const matchRouteName = (url, routesCollection) => {
     let fRouteName = null;
 
