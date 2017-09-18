@@ -76,8 +76,7 @@ const routes = {
   to a store-aware service
 */
   
-  '/settings': MyBreadcrumbsResolver.resolve, // will receive ('/settings',null)
-  '/forum': MyBreadcrumbsResolver.resolve  
+  '/settings': MyBreadcrumbsResolver.resolve, // will receive ('/settings',null) 
 };
   
   
