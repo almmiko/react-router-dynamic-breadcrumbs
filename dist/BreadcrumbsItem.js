@@ -31,7 +31,7 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var getPlaceholderVars = function getPlaceholderVars(url, key) {
     var placeholders = key.match(placeholderMatcher);
     if (!placeholders) return null;
-    var routeMatcher = new RegExp(key.replace(placeholderMatcher, '([\\w-]+)'));
+    var routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, '([\\w-]+)') + '$');
     var match = url.match(routeMatcher);
     if (!match) return null;
     return placeholders.reduce(function (memo, placeholder, index, array) {
@@ -40,10 +40,6 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
       var value = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : match[index + 1] || null;
       return Object.assign(memo, (_Object$assign = {}, _defineProperty(_Object$assign, placeholder, value), _defineProperty(_Object$assign, placeholder.substring(1), value), _Object$assign));
     }, {});
-  };
-
-  var findRouteName = function findRouteName(url) {
-    return mappedRoutes[url];
   };
 
   var matchRouteName = function matchRouteName(url, routesCollection) {
@@ -55,10 +51,6 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
       switch (true) {
         case aTokenCount === bTokenCount:
           return a.length > b.length ? 1 : -1; //longest routes have the priority
-        case aTokenCount === 0 && bTokenCount !== 0:
-          return 1;
-        case aTokenCount !== 0 && bTokenCount === 0:
-          return -1; //static routes always have the priority over dynamic
         default:
           return aTokenCount < bTokenCount ? 1 : -1; //among dynamic routes the one with less placeholders take priority
       }
@@ -76,7 +68,7 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
           }
         } else {
           if (key === url) {
-            if (_routeName instanceof Function) fRouteName = _routeName(key, null);else fRouteName = _routeName;
+            if (_routeName instanceof Function) fRouteName = _routeName(url, null);else fRouteName = _routeName;
           }
         }
       }

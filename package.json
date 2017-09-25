@@ -1,6 +1,6 @@
 {
   "name": "react-router-dynamic-breadcrumbs",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Breadcrumbs react component for react-router-v4",
   "main": "dist/index.js",
   "scripts": {

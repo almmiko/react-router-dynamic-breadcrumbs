@@ -11,7 +11,7 @@ const BreadcrumbsItem = (props) => {
     const placeholders = key.match(placeholderMatcher);
     if (!placeholders)
       return null;
-    const routeMatcher = new RegExp(key.replace(placeholderMatcher, '([\\w-]+)'));
+    const routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, '([\\w-]+)') + '$');
     const match = url.match(routeMatcher);
     if (!match)
       return null;
@@ -30,10 +30,6 @@ const BreadcrumbsItem = (props) => {
       switch (true) {
         case aTokenCount === bTokenCount:
           return a.length > b.length ? 1 : -1; //longest routes have the priority
-        case aTokenCount === 0 && bTokenCount !== 0:
-          return 1;
-        case aTokenCount !== 0 && bTokenCount === 0:
-          return -1; //static routes always have the priority over dynamic
         default:
           return aTokenCount < bTokenCount ? 1 : -1; //among dynamic routes the one with less placeholders take priority
       }
