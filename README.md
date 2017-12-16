@@ -64,7 +64,7 @@ const routes = {
 *  while link will contain smth like "Page 4 of 10"
 */
   
-  '/users/:id/posts/:page': (match)=>`Page ${match[':page']} of ${Pagination.total()}`,
+  '/users/:id/posts/:page': (url, match)=>`Page ${match[':page']} of ${Pagination.total()}`,
   
    
 /*
