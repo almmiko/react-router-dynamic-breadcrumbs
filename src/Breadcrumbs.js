@@ -1,9 +1,7 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import BreadcrumbsItem from './BreadcrumbsItem';
-
-const isDefined = v => (v !== undefined && v !== null && String(v).length);
+import {isDefined, default as BreadcrumbsItem} from './BreadcrumbsItem';
 
 const getPaths = (pathname, rootName = null) => {
   const paths = [
@@ -31,11 +29,12 @@ const getPaths = (pathname, rootName = null) => {
 
 const Breadcrumbs = (props) => {
   const {location, mappedRoutes, WrapperComponent, rootName} = props;
+  const path = location.pathname;
 
+  if (isDefined(rootName))
+    mappedRoutes['/'] = (url, match) => ((typeof rootName === 'function') ? rootName(path, match) : rootName);
 
-  mappedRoutes['/'] = rootName;
-
-  const paths = getPaths(location.pathname);
+  const paths = getPaths(path);
   return (
     <WrapperComponent>
       {paths.map((p, idx) => (

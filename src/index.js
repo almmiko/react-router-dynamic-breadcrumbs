@@ -31,7 +31,7 @@ BreadcrumbsWrapper.propTypes = {
   WrapperComponent: PropTypes.func,
   ActiveLinkComponent: PropTypes.func,
   LinkComponent: PropTypes.func,
-  rootName: PropTypes.oneOf([PropTypes.string,PropTypes.func])
+  rootName: PropTypes.oneOfType([PropTypes.string,PropTypes.func])
 };
 
 export default BreadcrumbsWrapper;

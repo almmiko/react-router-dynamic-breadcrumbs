@@ -62,8 +62,6 @@ const routes = {
   })
   
   while link will contain smth like "Page 4 of 10".
-  
-  If callback returns NULL or an empty string, the breadcrumb is hidden from chain
 */
   '/users/:id/posts/:page': (url, match) => `Page ${match[':page']} of ${Pagination.total()}`,
   
@@ -78,13 +76,13 @@ const routes = {
   '/settings': MyBreadcrumbsResolver.resolve, // will receive ('/settings',null)
   
 /*
-*  NULLs and empty strings explicitly listed will be skipped from breadcrumb chain. 
-*  Otherwise if nothing is matched, the corresponding url part will be displayed as crumb title
+*  NULLs, FALSEs and empty strings (if listed explicitly) will be skipped from breadcrumb chain. 
+*  Otherwise if url is matched but not provided in mapping, the corresponding url part will be displayed as crumb title
 *  
-*  You can also return NULL from callback to stop particular crumbs from displaying on condition
+*  If callback returns NULL, FALSE or an empty string, the breadcrumb is hidden from chain
 */
     
-//  will skip this link from breadcrumbs. Without it the crumb title for url will be "posts"
+//  will skip this link from breadcrumbs. Without this line the crumb title for url will be "posts"
    '/users/:id/posts': null, 
    
 //  will skip this link from breadcrumbs conditionally
@@ -142,7 +140,7 @@ class App extends Component {
 | `WrapperComponent` | function | Function responsible for creating wrapper html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `ActiveLinkComponent` | function | Function responsible for creating active link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `LinkComponent` | function | Function responsible for creating link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
-| `rootName` | string &#124; function | If set, root breadcrumb will always be displayed with given caption.<br/>If function is provided, it's resolved at display time, as with any other breadcrumbs, and receives `{url:'/',match:null}` as arguments.<br/>Empty string or `null` will hide it  (**default**) |
+| `rootName` | string &#124; function | If set, root breadcrumb will always be displayed with given caption.<br/>If function is provided, it's resolved at display time, as with any other breadcrumbs, but it receives a full location path as `url` and `null` as `match`<br/>Empty string, `false` or `null` will hide it  (**default**) |
 
 
 

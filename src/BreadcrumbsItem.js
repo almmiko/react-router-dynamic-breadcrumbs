@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+export const isDefined = v => (v !== undefined && v !== null && v !== false && String(v).length > 0);
 const BreadcrumbsItem = (props) => {
   const {match, name, mappedRoutes} = props;
   const {ActiveLinkComponent, LinkComponent} = props.parentProps;
@@ -40,7 +41,7 @@ const BreadcrumbsItem = (props) => {
         const match = getPlaceholderVars(url, key);
         if (match) {
           switch (true) {
-            case (routeName === null || routeName === ''):
+            case (!isDefined(routeName)):
               fRouteName = null;
               break;
             case  (routeName instanceof Function):
@@ -55,7 +56,7 @@ const BreadcrumbsItem = (props) => {
       else {
         if (key === url) {
           switch (true) {
-            case (routeName === null || routeName === ''):
+            case (!isDefined(routeName)):
               fRouteName = null;
               break;
             case  (routeName instanceof Function):
@@ -71,18 +72,19 @@ const BreadcrumbsItem = (props) => {
   };
 
   let routeName = matchRouteName(match.url, mappedRoutes);
-  if (routeName === null)
-    return null;
-  else
+  if (routeName !== null)
     routeName = routeName || name;
 
-  return match.isExact
-    ? <ActiveLinkComponent>{routeName}</ActiveLinkComponent>
-    : <LinkComponent>
-      <Link to={match.url || ''}>
-        {routeName}
-      </Link>
-    </LinkComponent>;
+  if (isDefined(routeName))
+    return match.isExact
+      ? <ActiveLinkComponent>{routeName}</ActiveLinkComponent>
+      : <LinkComponent>
+        <Link to={match.url || ''}>
+          {routeName}
+        </Link>
+      </LinkComponent>;
+
+  return null;
 };
 
 

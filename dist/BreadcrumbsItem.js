@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.isDefined = undefined;
 
 var _react = require('react');
 
@@ -18,6 +19,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var isDefined = exports.isDefined = function isDefined(v) {
+  return v !== undefined && v !== null && v !== false && String(v).length > 0;
+};
 var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var match = props.match,
       name = props.name,
@@ -71,7 +75,7 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
             var match = getPlaceholderVars(url, key);
             if (match) {
               switch (true) {
-                case _routeName === null || _routeName === '':
+                case !isDefined(_routeName):
                   fRouteName = null;
                   break;
                 case _routeName instanceof Function:
@@ -87,7 +91,7 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
         } else {
           if (key === url) {
             switch (true) {
-              case _routeName === null || _routeName === '':
+              case !isDefined(_routeName):
                 fRouteName = null;
                 break;
               case _routeName instanceof Function:
@@ -118,9 +122,9 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
   };
 
   var routeName = matchRouteName(match.url, mappedRoutes);
-  if (routeName === null) return null;else routeName = routeName || name;
+  if (routeName !== null) routeName = routeName || name;
 
-  return match.isExact ? _react2.default.createElement(
+  if (isDefined(routeName)) return match.isExact ? _react2.default.createElement(
     ActiveLinkComponent,
     null,
     routeName
@@ -133,6 +137,8 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
       routeName
     )
   );
+
+  return null;
 };
 
 BreadcrumbsItem.propTypes = {
