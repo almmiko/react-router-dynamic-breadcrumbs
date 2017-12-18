@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.isDefined = undefined;
 
 var _react = require('react');
 
@@ -18,6 +19,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var isDefined = exports.isDefined = function isDefined(v) {
+  return v !== undefined && v !== null && v !== false && String(v).length > 0;
+};
 var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var match = props.match,
       name = props.name,
@@ -43,9 +47,9 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
   };
 
   var matchRouteName = function matchRouteName(url, routesCollection) {
-    var fRouteName = null;
+    var fRouteName = '';
 
-    Object.keys(routesCollection).sort(function (a, b) {
+    var paths = Object.keys(routesCollection).sort(function (a, b) {
       var aTokenCount = (a.match(placeholderMatcher) || []).length;
       var bTokenCount = (b.match(placeholderMatcher) || []).length;
       switch (true) {
@@ -54,46 +58,86 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
         default:
           return aTokenCount < bTokenCount ? 1 : -1; //among dynamic routes the one with less placeholders take priority
       }
-    }).forEach(function (key) {
-      if (routesCollection.hasOwnProperty(key)) {
+    });
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = paths.filter(function (v) {
+        return routesCollection.hasOwnProperty(v);
+      })[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var key = _step.value;
+
         var _routeName = routesCollection[key];
         if (key.indexOf(':') !== -1) {
-          var _match = getPlaceholderVars(url, key);
-          if (_match) {
-            if (_routeName instanceof Function) fRouteName = _routeName(url, _match);else {
-              fRouteName = Object.keys(_match).reduce(function (routeName, placeholder) {
-                return routeName.replace(placeholder, _match[placeholder]);
-              }, _routeName);
+          (function () {
+            var match = getPlaceholderVars(url, key);
+            if (match) {
+              switch (true) {
+                case !isDefined(_routeName):
+                  fRouteName = null;
+                  break;
+                case _routeName instanceof Function:
+                  fRouteName = _routeName(url, match);
+                  break;
+                default:
+                  fRouteName = Object.keys(match).reduce(function (routeName, placeholder) {
+                    return routeName.replace(placeholder, match[placeholder]);
+                  }, _routeName);
+              }
             }
-          }
+          })();
         } else {
           if (key === url) {
-            if (_routeName instanceof Function) fRouteName = _routeName(url, null);else fRouteName = _routeName;
+            switch (true) {
+              case !isDefined(_routeName):
+                fRouteName = null;
+                break;
+              case _routeName instanceof Function:
+                fRouteName = _routeName(url, null);
+                break;
+              default:
+                fRouteName = _routeName;
+            }
           }
         }
       }
-    });
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
 
     return fRouteName;
   };
 
-  var routeName = matchRouteName(match.url, mappedRoutes) || name;
+  var routeName = matchRouteName(match.url, mappedRoutes);
+  if (routeName !== null) routeName = routeName || name;
 
-  if (routeName) {
-    return match.isExact ? _react2.default.createElement(
-      ActiveLinkComponent,
-      null,
+  if (isDefined(routeName)) return match.isExact ? _react2.default.createElement(
+    ActiveLinkComponent,
+    null,
+    routeName
+  ) : _react2.default.createElement(
+    LinkComponent,
+    null,
+    _react2.default.createElement(
+      _reactRouterDom.Link,
+      { to: match.url || '' },
       routeName
-    ) : _react2.default.createElement(
-      LinkComponent,
-      null,
-      _react2.default.createElement(
-        _reactRouterDom.Link,
-        { to: match.url || '' },
-        routeName
-      )
-    );
-  }
+    )
+  );
+
   return null;
 };
 
