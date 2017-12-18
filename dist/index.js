@@ -29,7 +29,8 @@ var BreadcrumbsWrapper = function BreadcrumbsWrapper(props) {
         mappedRoutes: props.mappedRoutes,
         WrapperComponent: props.WrapperComponent,
         ActiveLinkComponent: props.ActiveLinkComponent,
-        LinkComponent: props.LinkComponent
+        LinkComponent: props.LinkComponent,
+        rootName: props.rootName
       }, rest));
     }
   });
@@ -56,14 +57,16 @@ BreadcrumbsWrapper.defaultProps = {
       null,
       props.children
     );
-  }
+  },
+  rootName: ''
 };
 
 BreadcrumbsWrapper.propTypes = {
   mappedRoutes: _propTypes2.default.shape({}).isRequired,
   WrapperComponent: _propTypes2.default.func,
   ActiveLinkComponent: _propTypes2.default.func,
-  LinkComponent: _propTypes2.default.func
+  LinkComponent: _propTypes2.default.func,
+  rootName: _propTypes2.default.oneOf(_propTypes2.default.string, _propTypes2.default.func)
 };
 
 exports.default = BreadcrumbsWrapper;

@@ -48,23 +48,24 @@ const routes = {
   '/': 'Home',
   '/blog': 'Blog', 
   '/users': 'Users',
-  '/users/:id/info': 'User Info', 
-  '/users/:id/posts': 'Posts by :id', // backreferences will be replaced by correspoding parts of url
+  '/users/:id/info': 'User Info',
+  '/users/:id/posts/:p_id': 'Post :p_id by :id', // backreferences will be replaced by correspoding parts of url
   
 /* 
-*  you can provide a callback of (url, match)=>string signature
-*  match will contain pattern values both prefixed and isolated
-*  for instance the following pattern will result in callback with
-*   
-*  ('/users/dummy/posts/4', {
-*   'id':'dummy', ':id':'dummy', 
-*   'page':'4',   ':page':'4'
-*  })
-*  
-*  while link will contain smth like "Page 4 of 10"
-*/
+  You can provide a callback of (url, match)=>string signature
+  match will contain pattern values both prefixed and isolated
+  for instance the following pattern will result in callback with
+   
+  ('/users/dummy/posts/4', {
+   'id':'dummy', ':id':'dummy', 
+   'page':'4',   ':page':'4'
+  })
   
-  '/users/:id/posts/:page': (url, match)=>`Page ${match[':page']} of ${Pagination.total()}`,
+  while link will contain smth like "Page 4 of 10".
+  
+  If callback returns NULL or an empty string, the breadcrumb is hidden from chain
+*/
+  '/users/:id/posts/:page': (url, match) => `Page ${match[':page']} of ${Pagination.total()}`,
   
    
 /*
@@ -72,11 +73,23 @@ const routes = {
   
   NOTE: Services or stores will not be automatically injected into resolver function, 
   you should either inject your services to your config, like in previous example (bad pattern), 
-  .bind context to your resolvers,  or even totally relay the resolution 
-  to a store-aware service
+  .bind context to your resolvers,  or even totally relay the resolution to a store-aware service
 */
+  '/settings': MyBreadcrumbsResolver.resolve, // will receive ('/settings',null)
   
-  '/settings': MyBreadcrumbsResolver.resolve, // will receive ('/settings',null) 
+/*
+*  NULLs and empty strings explicitly listed will be skipped from breadcrumb chain. 
+*  Otherwise if nothing is matched, the corresponding url part will be displayed as crumb title
+*  
+*  You can also return NULL from callback to stop particular crumbs from displaying on condition
+*/
+    
+//  will skip this link from breadcrumbs. Without it the crumb title for url will be "posts"
+   '/users/:id/posts': null, 
+   
+//  will skip this link from breadcrumbs conditionally
+   '/users/:id/friends/': (url,match) => match.id==User.getId()?null:match.id, 
+   
 };
   
   
@@ -125,10 +138,11 @@ class App extends Component {
 
 | Property | Type | Description
 :---|:---|:---
-| `mappedRoutes` | object | Plain javascript object with routes paths and names/resolver callbacks. Expected signature: `(Object): PropTypes.shape({}).isRequired` |
+| `mappedRoutes` | object *(required)*| Plain javascript object with routes paths and names/resolver callbacks. Expected signature: `(Object): PropTypes.shape({}).isRequired` |
 | `WrapperComponent` | function | Function responsible for creating wrapper html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `ActiveLinkComponent` | function | Function responsible for creating active link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `LinkComponent` | function | Function responsible for creating link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
+| `rootName` | string &#124; function | If set, root breadcrumb will always be displayed with given caption.<br/>If function is provided, it's resolved at display time, as with any other breadcrumbs, and receives `{url:'/',match:null}` as arguments.<br/>Empty string or `null` will hide it  (**default**) |
 
 
 

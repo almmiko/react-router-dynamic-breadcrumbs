@@ -22,9 +22,15 @@ var _BreadcrumbsItem2 = _interopRequireDefault(_BreadcrumbsItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var isDefined = function isDefined(v) {
+  return v !== undefined && v !== null && String(v).length;
+};
+
 var getPaths = function getPaths(pathname) {
+  var rootName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
   var paths = [{
-    name: '',
+    name: isDefined(rootName) ? typeof rootName === 'string' ? rootName : '/' : '',
     path: '/'
   }];
 
@@ -47,11 +53,13 @@ var getPaths = function getPaths(pathname) {
 var Breadcrumbs = function Breadcrumbs(props) {
   var location = props.location,
       mappedRoutes = props.mappedRoutes,
-      WrapperComponent = props.WrapperComponent;
+      WrapperComponent = props.WrapperComponent,
+      rootName = props.rootName;
 
+
+  mappedRoutes['/'] = rootName;
 
   var paths = getPaths(location.pathname);
-
   return _react2.default.createElement(
     WrapperComponent,
     null,
