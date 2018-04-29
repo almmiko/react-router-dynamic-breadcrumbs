@@ -1,6 +1,6 @@
 {
   "name": "react-router-dynamic-breadcrumbs",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Breadcrumbs react component for react-router-v4",
   "main": "dist/index.js",
   "scripts": {
@@ -24,11 +24,11 @@
   },
   "homepage": "https://github.com/roya3000/react-router-dynamic-breadcrumbs#readme",
   "dependencies": {
-    "prop-types": "^15.5.10",
-    "react-router-dom": "^4.1.1"
+    "prop-types": "^15.5.10"
   },
   "peerDependencies": {
-    "react": "^15.6.1"
+    "react": "^15.6.1",
+    "react-router-dom": "^4.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
