@@ -47,14 +47,14 @@ BreadcrumbsWrapper.defaultProps = {
   ActiveLinkComponent: function ActiveLinkComponent(props) {
     return _react2.default.createElement(
       'li',
-      { className: 'active' },
+      { className: 'breadcrumb-item active' },
       props.children
     );
   },
   LinkComponent: function LinkComponent(props) {
     return _react2.default.createElement(
       'li',
-      null,
+      { className: 'breadcrumb-item' },
       props.children
     );
   },
