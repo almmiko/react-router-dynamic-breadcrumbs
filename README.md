@@ -141,7 +141,7 @@ class App extends Component {
 | `ActiveLinkComponent` | function | Function responsible for creating active link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `LinkComponent` | function | Function responsible for creating link html structure. Expected signature: `(props) => <JSX>{props.children}</JSX> PropTypes.func` |
 | `rootName` | string &#124; function | If set, root breadcrumb will always be displayed with given caption.<br/>If function is provided, it's resolved at display time, as with any other breadcrumbs, but it receives a full location path as `url` and `null` as `match`<br/>Empty string, `false` or `null` will hide it  (**default**) |
-| `routeMatcherRegex` | string | Customize routeMatcher by regular expression. <br/>e.g. If you want to accept the pipe character "&#124;", you can pass in `"([\\w-|]+)"` <br/> By default routeMatcherRegex is set to `"([\\w-]+)"`
+| `routeMatcherRegex` | string | Customize routeMatcher by regular expression. <br/>e.g. If you want to accept the pipe character "&#124;", you can pass in `"([\\w-&#124;]+)"` <br/> By default routeMatcherRegex is set to `"([\\w-]+)"`
 
 
 
