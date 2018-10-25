@@ -25,7 +25,8 @@ var isDefined = exports.isDefined = function isDefined(v) {
 var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var match = props.match,
       name = props.name,
-      mappedRoutes = props.mappedRoutes;
+      mappedRoutes = props.mappedRoutes,
+      routeMatcherRegex = props.routeMatcherRegex;
   var _props$parentProps = props.parentProps,
       ActiveLinkComponent = _props$parentProps.ActiveLinkComponent,
       LinkComponent = _props$parentProps.LinkComponent;
@@ -35,7 +36,7 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var getPlaceholderVars = function getPlaceholderVars(url, key) {
     var placeholders = key.match(placeholderMatcher);
     if (!placeholders) return null;
-    var routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, '([\\w-]+)') + '$');
+    var routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, routeMatcherRegex) + '$');
     var match = url.match(routeMatcher);
     if (!match) return null;
     return placeholders.reduce(function (memo, placeholder, index, array) {
@@ -145,7 +146,12 @@ BreadcrumbsItem.propTypes = {
   match: _propTypes2.default.shape({}).isRequired,
   name: _propTypes2.default.string.isRequired,
   mappedRoutes: _propTypes2.default.shape({}).isRequired,
-  parentProps: _propTypes2.default.shape({}).isRequired
+  parentProps: _propTypes2.default.shape({}).isRequired,
+  routeMatcherRegex: _propTypes2.default.shape({})
+};
+
+BreadcrumbsItem.defaultProps = {
+  routeMatcherRegex: '([\\w-]+)'
 };
 
 exports.default = BreadcrumbsItem;

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 export const isDefined = v => (v !== undefined && v !== null && v !== false && String(v).length > 0);
 const BreadcrumbsItem = (props) => {
-  const {match, name, mappedRoutes} = props;
+  const {match, name, mappedRoutes, routeMatcherRegex} = props;
   const {ActiveLinkComponent, LinkComponent} = props.parentProps;
   const placeholderMatcher = /:[^\s/]+/g;
 
@@ -12,7 +12,7 @@ const BreadcrumbsItem = (props) => {
     const placeholders = key.match(placeholderMatcher);
     if (!placeholders)
       return null;
-    const routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, '([\\w-]+)') + '$');
+    const routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, routeMatcherRegex) + '$');
     const match = url.match(routeMatcher);
     if (!match)
       return null;
@@ -93,6 +93,11 @@ BreadcrumbsItem.propTypes = {
   name: PropTypes.string.isRequired,
   mappedRoutes: PropTypes.shape({}).isRequired,
   parentProps: PropTypes.shape({}).isRequired,
+  routeMatcherRegex: PropTypes.shape({})
 };
+
+BreadcrumbsItem.defaultProps = {
+  routeMatcherRegex: '([\\w-]+)' 
+}
 
 export default BreadcrumbsItem;

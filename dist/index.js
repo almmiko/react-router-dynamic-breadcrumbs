@@ -30,7 +30,8 @@ var BreadcrumbsWrapper = function BreadcrumbsWrapper(props) {
         WrapperComponent: props.WrapperComponent,
         ActiveLinkComponent: props.ActiveLinkComponent,
         LinkComponent: props.LinkComponent,
-        rootName: props.rootName
+        rootName: props.rootName,
+        routeMatcherRegex: props.routeMatcherRegex
       }, rest));
     }
   });
@@ -66,7 +67,8 @@ BreadcrumbsWrapper.propTypes = {
   WrapperComponent: _propTypes2.default.func,
   ActiveLinkComponent: _propTypes2.default.func,
   LinkComponent: _propTypes2.default.func,
-  rootName: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func])
+  rootName: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]),
+  routeMatcherRegex: _propTypes2.default.shape({})
 };
 
 exports.default = BreadcrumbsWrapper;
