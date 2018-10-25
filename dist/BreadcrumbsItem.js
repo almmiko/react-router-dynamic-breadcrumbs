@@ -28,14 +28,15 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
       mappedRoutes = props.mappedRoutes;
   var _props$parentProps = props.parentProps,
       ActiveLinkComponent = _props$parentProps.ActiveLinkComponent,
-      LinkComponent = _props$parentProps.LinkComponent;
+      LinkComponent = _props$parentProps.LinkComponent,
+      routeMatcherRegex = _props$parentProps.routeMatcherRegex;
 
   var placeholderMatcher = /:[^\s/]+/g;
 
   var getPlaceholderVars = function getPlaceholderVars(url, key) {
     var placeholders = key.match(placeholderMatcher);
     if (!placeholders) return null;
-    var routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, '([\\w-]+)') + '$');
+    var routeMatcher = new RegExp('^' + key.replace(placeholderMatcher, routeMatcherRegex || '([\\w-]+)') + '$');
     var match = url.match(routeMatcher);
     if (!match) return null;
     return placeholders.reduce(function (memo, placeholder, index, array) {
