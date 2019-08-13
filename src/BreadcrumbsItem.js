@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 export const isDefined = v => (v !== undefined && v !== null && v !== false && String(v).length > 0);
 const BreadcrumbsItem = (props) => {
   const {match, name, mappedRoutes} = props;
-  const {ActiveLinkComponent, LinkComponent, routeMatcherRegex} = props.parentProps;
+  const {ActiveLinkComponent, LinkComponent, routeMatcherRegex, titleFn} = props.parentProps;
   const placeholderMatcher = /:[^\s/]+/g;
 
   const getPlaceholderVars = (url, key) => {
@@ -74,6 +74,10 @@ const BreadcrumbsItem = (props) => {
   let routeName = matchRouteName(match.url, mappedRoutes);
   if (routeName !== null)
     routeName = routeName || name;
+
+  if (titleFn && isDefined(routeName) && match.isExact) {
+    document.title = titleFn(routeName);
+  }
 
   if (isDefined(routeName))
     return match.isExact

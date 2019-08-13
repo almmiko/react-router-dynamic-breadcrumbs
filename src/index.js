@@ -13,6 +13,7 @@ const BreadcrumbsWrapper = (props) => {
              LinkComponent={props.LinkComponent}
              rootName={props.rootName}
              routeMatcherRegex={props.routeMatcherRegex}
+             titleFn={props.titleFn}
              {...rest}
            />}
     />
@@ -24,7 +25,8 @@ BreadcrumbsWrapper.defaultProps = {
   WrapperComponent: (props) => <ol className="breadcrumb" >{props.children}</ol>,
   ActiveLinkComponent: (props) => <li className="breadcrumb-item active" >{props.children}</li>,
   LinkComponent: (props) => <li className="breadcrumb-item">{props.children}</li>,
-  rootName:''
+  rootName:'',
+  titleFn: undefined,
 };
 
 BreadcrumbsWrapper.propTypes = {
@@ -34,6 +36,7 @@ BreadcrumbsWrapper.propTypes = {
   LinkComponent: PropTypes.func,
   rootName: PropTypes.oneOfType([PropTypes.string,PropTypes.func]),
   routeMatcherRegex: PropTypes.string,
+  titleFn: PropTypes.func,
 };
 
 export default BreadcrumbsWrapper;
