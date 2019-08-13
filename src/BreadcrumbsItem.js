@@ -75,9 +75,8 @@ const BreadcrumbsItem = (props) => {
   if (routeName !== null)
     routeName = routeName || name;
 
-  if (titleFn && isDefined(routeName) && match.isExact) {
+  if (titleFn && isDefined(routeName) && match.isExact)
     document.title = titleFn(routeName);
-  }
 
   if (isDefined(routeName))
     return match.isExact
