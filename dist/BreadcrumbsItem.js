@@ -29,7 +29,8 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
   var _props$parentProps = props.parentProps,
       ActiveLinkComponent = _props$parentProps.ActiveLinkComponent,
       LinkComponent = _props$parentProps.LinkComponent,
-      routeMatcherRegex = _props$parentProps.routeMatcherRegex;
+      routeMatcherRegex = _props$parentProps.routeMatcherRegex,
+      titleFn = _props$parentProps.titleFn;
 
   var placeholderMatcher = /:[^\s/]+/g;
 
@@ -124,6 +125,8 @@ var BreadcrumbsItem = function BreadcrumbsItem(props) {
 
   var routeName = matchRouteName(match.url, mappedRoutes);
   if (routeName !== null) routeName = routeName || name;
+
+  if (titleFn && isDefined(routeName) && match.isExact) document.title = titleFn(routeName);
 
   if (isDefined(routeName)) return match.isExact ? _react2.default.createElement(
     ActiveLinkComponent,
